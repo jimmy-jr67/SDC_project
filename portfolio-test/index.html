@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Portfolio System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="auth-module" class="container auth-container">
+        <div class="card text-center">
+            <h2>Portfolio Portal</h2>
+            <p class="mt-1 subtitle">Please login or sign up to continue</p>
+            
+            <div id="login-form">
+                <input type="text" id="login-username" placeholder="Username">
+                <input type="password" id="login-password" placeholder="Password">
+                <button class="btn btn-primary w-100" onclick="handleLogin()">Login</button>
+                <p class="mt-1">New here? <a href="#" onclick="toggleAuthView()">Sign Up</a></p>
+            </div>
+
+            <div id="signup-form" class="hidden">
+                <input type="text" id="signup-username" placeholder="Choose a Username">
+                <input type="password" id="signup-password" placeholder="Choose a Password">
+                <select id="signup-role">
+                    <option value="user">Viewer (User Module)</option>
+                    <option value="admin">Owner (Admin Module)</option>
+                </select>
+                <button class="btn btn-primary w-100" onclick="handleSignup()">Create Account</button>
+                <p class="mt-1">Already have an account? <a href="#" onclick="toggleAuthView()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="user-module" class="hidden">
+        <nav class="flex justify-between items-center">
+            <h2>Personal Portfolio</h2>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
+        </nav>
+        
+        <div class="container">
+            <div class="card text-center mt-2">
+                <h1>Hi, We're Team 12 👋</h1>
+                <p class="mt-1 subtitle" style="font-size: 1.1rem;">
+                    Some B.Tech CSE students passionate about software development, systems programming, and building impactful applications.
+                </p>
+                <div class="skill-tags flex justify-center mt-1">
+                    <span class="skill-tag">HTML</span>
+                    <span class="skill-tag">CSS</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">Java</span>
+                    <span class="skill-tag">C</span>
+                    <span class="skill-tag">STM32</span>
+                </div>
+            </div>
+
+            <h2 class="mt-2" style="margin-bottom: 1rem;">My Projects</h2>
+            <div class="marquee-wrapper">
+                <div id="user-projects-grid" class="marquee-content flex gap-1">
+                </div>
+            </div>
+
+            <h2 class="mt-2" style="margin-bottom: 1rem;">Contact Us</h2>
+            <div class="card">
+                <input type="text" id="contact-name" placeholder="Your Name">
+                <input type="email" id="contact-email" placeholder="Your Email Address">
+                <textarea id="contact-message" rows="4" placeholder="Your Message..."></textarea>
+                <button class="btn btn-primary" onclick="submitContact()">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-module" class="hidden">
+        <nav class="flex justify-between items-center">
+            <h2>Admin Dashboard</h2>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
+        </nav>
+
+        <div class="container flex flex-col gap-1">
+            <div class="card">
+                <h3>Add New Project</h3>
+                <div class="flex gap-1 mt-1">
+                    <input type="text" id="new-proj-title" placeholder="Project Title (e.g., E-commerce Store)">
+                    <input type="text" id="new-proj-desc" placeholder="Short Description">
+                    <button class="btn btn-primary whitespace-nowrap" onclick="addProject()">Add Project</button>
+                </div>
+            </div>
+
+            <div class="card mt-1">
+                <h3>Manage Projects</h3>
+                <div id="admin-projects-list" class="mt-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
