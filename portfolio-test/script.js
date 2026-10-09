@@ -26,6 +26,7 @@ function checkSession() {
         if (activeUser.role === 'admin') {
             showModule('admin-module');
             renderAdminProjects();
+            renderAdminMessages();
         } else {
             showModule('user-module');
             renderUserProjects();
@@ -172,4 +173,41 @@ function submitContact() {
     document.getElementById('contact-email').value = '';
     document.getElementById('contact-message').value = '';
     alert("Message sent successfully!");
+}
+
+function renderAdminMessages() {
+    const list = document.getElementById('admin-messages-list');
+    const messages = JSON.parse(localStorage.getItem('portfolioMessages')) || [];
+    list.innerHTML = '';
+
+    if (messages.length === 0) {
+        list.innerHTML = '<p style="color: var(--text-muted);">No messages received yet.</p>';
+        return;
+    }
+
+    messages.forEach(msg => {
+        const item = document.createElement('div');
+        item.className = 'admin-list-item';
+        item.innerHTML = `
+            <div>
+                <strong>${msg.name}</strong> 
+                <span style="font-size: 0.85rem; color: var(--text-muted);">
+                    (<a href="mailto:${msg.email}" style="color: var(--primary); text-decoration: none;">${msg.email}</a>)
+                </span>
+                <p style="font-size: 0.95rem; color: var(--text-main); margin-top: 0.25rem;">"${msg.message}"</p>
+            </div>
+            <button class="btn btn-danger" onclick="deleteMessage(${msg.id})">Delete</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function deleteMessage(id) {
+    if(!confirm("Are you sure you want to delete this message?")) return;
+
+    let messages = JSON.parse(localStorage.getItem('portfolioMessages')) || [];
+    messages = messages.filter(msg => msg.id !== id);
+    localStorage.setItem('portfolioMessages', JSON.stringify(messages));
+    
+    renderAdminMessages();
 }
