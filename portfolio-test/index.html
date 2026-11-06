@@ -7,7 +7,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="auth-module" class="container auth-container">
+    <div id="auth-module" class="auth-shell">
+        <div class="auth-orb auth-orb-one"></div>
+        <div class="auth-orb auth-orb-two"></div>
+        <div class="auth-intro">
+            <span class="auth-kicker">TEAM 12</span>
+            <div id="login-glitch-title" aria-label="Team 12 Personal Portfolio"></div>
+            <div class="auth-stack"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Java</span></div>
+        </div>
+        <div class="container auth-container">
         <div class="card text-center">
             <h2>Portfolio Portal</h2>
             <p class="mt-1 subtitle">Please login or sign up to continue</p>
@@ -32,6 +40,7 @@
         </div>
     </div>
 
+    </div>
     <div id="user-module" class="hidden">
         <nav class="flex justify-between items-center">
             <h2>Personal Portfolio</h2>
@@ -40,7 +49,8 @@
         
         <div class="container">
             <div class="card text-center mt-2">
-                <h1>Hi, We're Team 12 👋</h1>
+                <span class="hero-eyebrow">WELCOME TO OUR PORTFOLIO</span>
+                <h1>Hi, We're Team 12 <span class="wave">👋</span></h1>
                 <p class="mt-1 subtitle" style="font-size: 1.1rem;">
                     Some B.Tech CSE students passionate about software development, systems programming, and building impactful applications.
                 </p>
@@ -54,13 +64,10 @@
                 </div>
             </div>
 
-            <h2 class="mt-2" style="margin-bottom: 1rem;">My Projects</h2>
-            <div class="marquee-wrapper">
-                <div id="user-projects-grid" class="marquee-content flex gap-1">
-                </div>
-            </div>
+            <div class="section-heading mt-2"><div><span class="section-kicker">WHAT WE'VE BEEN BUILDING</span><h2>Featured projects</h2></div><span class="section-sparkle">✳</span></div>
+            <div id="user-projects-grid"></div>
 
-            <h2 class="mt-2" style="margin-bottom: 1rem;">Contact Us</h2>
+            <div class="section-heading mt-2"><div><span class="section-kicker">LET'S CONNECT</span><h2>Have a project in mind?</h2></div></div>
             <div class="card">
                 <input type="text" id="contact-name" placeholder="Your Name">
                 <input type="email" id="contact-email" placeholder="Your Email Address">
@@ -100,6 +107,8 @@
         </div>
     </div>
 
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
