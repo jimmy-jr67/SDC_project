@@ -6,6 +6,7 @@ const defaultProjects = [
 ];
 
 window.onload = () => {
+    mountLoginGlitchText();
     if (!localStorage.getItem('portfolioProjects')) {
         localStorage.setItem('portfolioProjects', JSON.stringify(defaultProjects));
     }
@@ -85,27 +86,114 @@ function getProjects() {
     return JSON.parse(localStorage.getItem('portfolioProjects')) || [];
 }
 
+function LoginGlitchText() {
+    const headingRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const heading = headingRef.current;
+        if (!heading) return;
+
+        function glitchNearCursor(event) {
+            heading.querySelectorAll('.glitch-letter').forEach(letter => {
+                const box = letter.getBoundingClientRect();
+                const centerX = box.left + box.width / 2;
+                const centerY = box.top + box.height / 2;
+                const distance = Math.hypot(event.clientX - centerX, event.clientY - centerY);
+                letter.classList.toggle('is-glitching', distance < 115);
+            });
+        }
+
+        function clearGlitch() {
+            heading.querySelectorAll('.glitch-letter').forEach(letter => letter.classList.remove('is-glitching'));
+        }
+
+        window.addEventListener('pointermove', glitchNearCursor);
+        window.addEventListener('pointerleave', clearGlitch);
+        return () => {
+            window.removeEventListener('pointermove', glitchNearCursor);
+            window.removeEventListener('pointerleave', clearGlitch);
+        };
+    }, []);
+
+    const words = 'team 12 personal portfolio'.split(' ');
+    return React.createElement('h1', { className: 'login-glitch-heading', ref: headingRef },
+        words.map((word, wordIndex) => React.createElement(React.Fragment, { key: wordIndex },
+            React.createElement('span', { className: 'glitch-word' },
+                Array.from(word).map((character, letterIndex) =>
+                    React.createElement('span', {
+                        className: 'glitch-letter',
+                        'data-char': character,
+                        key: letterIndex
+                    }, character)
+                )
+            ),
+            wordIndex < words.length - 1 ? ' ' : null
+        ))
+    );
+}
+function mountLoginGlitchText() {
+    const container = document.getElementById('login-glitch-title');
+    if (!container || !window.React || !window.ReactDOM) return;
+    if (!window.loginGlitchRoot) window.loginGlitchRoot = ReactDOM.createRoot(container);
+    window.loginGlitchRoot.render(React.createElement(LoginGlitchText));
+}
+function ProjectGallery() {
+    const [projects, setProjects] = React.useState(() => getProjects());
+    const [query, setQuery] = React.useState('');
+
+    React.useEffect(() => {
+        const syncProjects = () => setProjects(getProjects());
+        window.addEventListener('portfolioProjectsUpdated', syncProjects);
+        return () => window.removeEventListener('portfolioProjectsUpdated', syncProjects);
+    }, []);
+
+    const filteredProjects = projects.filter(project =>
+        `${project.title} ${project.desc}`.toLowerCase().includes(query.toLowerCase())
+    );
+
+    return React.createElement('section', { className: 'react-project-gallery' },
+        React.createElement('div', { className: 'gallery-toolbar' },
+            React.createElement('div', null,
+                React.createElement('span', { className: 'gallery-eyebrow' }, 'SELECTED WORK'),
+                React.createElement('p', { className: 'gallery-count' }, `${filteredProjects.length} ${filteredProjects.length === 1 ? 'project' : 'projects'}`)
+            ),
+            React.createElement('label', { className: 'gallery-search-wrap' },
+                React.createElement('span', { className: 'search-icon', 'aria-hidden': 'true' }, '⌕'),
+                React.createElement('input', {
+                    className: 'gallery-search',
+                    type: 'search',
+                    placeholder: 'Search projects...',
+                    value: query,
+                    onChange: event => setQuery(event.target.value),
+                    'aria-label': 'Search projects'
+                })
+            )
+        ),
+        filteredProjects.length
+            ? React.createElement('div', { className: 'project-grid' }, filteredProjects.map((project, index) =>
+                React.createElement('article', { className: 'project-card', key: project.id },
+                    React.createElement('div', { className: `project-card-art art-${index % 4}` },
+                        React.createElement('span', { className: 'project-number' }, String(index + 1).padStart(2, '0')),
+                        React.createElement('span', { className: 'project-art-mark', 'aria-hidden': 'true' }, ['✳', '◈', '⌘', '✦'][index % 4])
+                    ),
+                    React.createElement('div', { className: 'project-card-body' },
+                        React.createElement('span', { className: 'project-category' }, 'TEAM PROJECT'),
+                        React.createElement('h3', { className: 'project-title' }, project.title),
+                        React.createElement('p', { className: 'project-description' }, project.desc),
+                        React.createElement('span', { className: 'project-card-link' }, 'Explore project ', React.createElement('span', { 'aria-hidden': 'true' }, '↗'))
+                    )
+                )
+            ))
+            : React.createElement('div', { className: 'gallery-empty' }, query ? 'No projects match your search.' : 'No projects yet. Add one from the admin dashboard.')
+    );
+}
 function renderUserProjects() {
     const grid = document.getElementById('user-projects-grid');
-    const projects = getProjects();
-    grid.innerHTML = '';
-
-    if(projects.length === 0) {
-        grid.innerHTML = '<p>No projects found. Admin needs to add some!</p>';
-        return;
+    if (!grid) return;
+    if (!window.projectGalleryRoot) {
+        window.projectGalleryRoot = ReactDOM.createRoot(grid);
     }
-
-    const displayProjects = [...projects, ...projects];
-
-    displayProjects.forEach(proj => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">${proj.title}</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">${proj.desc}</p>
-        `;
-        grid.appendChild(card);
-    });
+    window.projectGalleryRoot.render(React.createElement(ProjectGallery));
 }
 
 function renderAdminProjects() {
